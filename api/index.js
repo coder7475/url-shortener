@@ -62,6 +62,19 @@ async function main() {
     res.json(data);
   });
 
+  // redirect
+  app.get("/api/shorturl/:short_url", async (req, res, next) => {
+    const exits = await ShortURL.findOne({
+      short_url: req.params.short_url,
+    });
+    if (exits) {
+      res.redirect(301, exits.original_url);
+      next();
+    } else {
+      res.json({ error: "invalid url" });
+    }
+  });
+
   app.listen(port, function () {
     console.log(`Listening on port ${port}....`);
   });
