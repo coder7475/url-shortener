@@ -44,7 +44,7 @@ async function main() {
   // shortner api
   app.post("/api/shorturl", async function (req, res) {
     const uuid = crypto.randomUUID().slice(0, 2);
-
+    
     const data = {
       original_url: req.body.url,
       short_url: uuid
@@ -54,7 +54,6 @@ async function main() {
     });
     if (!exits) {
       const result = await ShortURL.create(data);
-      data["short_url"] = uuid;
     } else {
       data["short_url"] = exits.short_url;
     }
