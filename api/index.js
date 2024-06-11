@@ -8,9 +8,7 @@ const dns = require('dns');
 // Basic Configuration
 const app = express();
 const port = process.env.PORT || 3000;
-const options = { 
-  all:true, 
-}; 
+
 const errosMsg = { error: "invalid url" }
 const { Schema, model } = require("mongoose");
 
@@ -48,7 +46,7 @@ async function main() {
 
   // shortner api
   app.post("/api/shorturl", async function (req, res) {
-    dns.lookup(req.body.url, options, (err, addresses) => {
+    dns.lookup(req.body.url, (err) => {
       if (err) {
         res.json(errosMsg)
       }});
