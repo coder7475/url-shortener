@@ -3,10 +3,15 @@ const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const crypto = require("crypto");
-
+// Accessing dns module 
+const dns = require('dns'); 
 // Basic Configuration
 const app = express();
 const port = process.env.PORT || 3000;
+const options = { 
+  all:true, 
+}; 
+const errosMsg = { error: "invalid url" }
 const { Schema, model } = require("mongoose");
 
 const shortUrlSchema = new Schema({
@@ -43,8 +48,12 @@ async function main() {
 
   // shortner api
   app.post("/api/shorturl", async function (req, res) {
+    dns.lookup(req.body.url, options, (err, addresses) => {
+      if (err) {
+        res.json(errosMsg)
+      }});
     const uuid = crypto.randomUUID().slice(0, 2);
-    
+
     const data = {
       original_url: req.body.url,
       short_url: uuid
@@ -63,14 +72,14 @@ async function main() {
   });
 
   // redirect
-  app.get("/api/shorturl/:short_url", async (req, res) => {
+  app.get("/api/shorturl/:short_url", async (req, res) => {    
     const exits = await ShortURL.findOne({
       short_url: req.params.short_url,
     });
     if (exits) {
       res.redirect(301, exits.original_url);
     } else {
-      res.json({ error: "invalid url" });
+      res.json(errosMsg);
     }
   });
 
