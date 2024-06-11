@@ -75,14 +75,7 @@ async function main() {
     }
   });
 
- 
-
   app.listen(port, function () {
     console.log(`Listening on port ${port}....`);
   });
 }
-
-app.get("*", (req, res) => {
-  res.json({ error: "invalid url" });
-
-})
