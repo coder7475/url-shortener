@@ -47,10 +47,16 @@ async function main() {
 
     const data = {
       original_url: req.body.url,
-      short_url: uuid,
     };
-
-    const result = await ShortURL.create(data);
+    const exits = await ShortURL.findOne({
+      original_url: req.body.url,
+    });
+    if (!exits) {
+      const result = await ShortURL.create(data);
+      data["short_url"] = uuid;
+    } else {
+      data["short_url"] = exits.short_url;
+    }
     // console.log(result);
     // const result = ShortURL.create(data);
     res.json(data);
