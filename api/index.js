@@ -4,7 +4,7 @@ const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const crypto = require("crypto");
 // Accessing dns module 
-const dns = require('dns'); 
+const validator = require("validator");
 // Basic Configuration
 const app = express();
 const port = process.env.PORT || 3000;
@@ -46,10 +46,12 @@ async function main() {
 
   // shortner api
   app.post("/api/shorturl", async function (req, res) {
-    dns.lookup(req.body.url, (err) => {
-      if (err) {
-        res.json(errosMsg)
-      }});
+    const validUrl = validator.isURL(req.body.url, {
+      require_protocol: true
+  });
+  if (!validUrl) {
+    res.json(errosMsg)
+  }
     const uuid = crypto.randomUUID().slice(0, 2);
 
     const data = {
