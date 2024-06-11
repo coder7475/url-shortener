@@ -47,6 +47,7 @@ async function main() {
 
     const data = {
       original_url: req.body.url,
+      short_url: uuid
     };
     const exits = await ShortURL.findOne({
       original_url: req.body.url,
