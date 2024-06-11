@@ -2,9 +2,25 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
-const app = express();
+const crypto = require("crypto");
+
 // Basic Configuration
+const app = express();
 const port = process.env.PORT || 3000;
+const { Schema, model } = require("mongoose");
+
+const shortUrlSchema = new Schema({
+  original_url: {
+    type: String,
+    required: true,
+  },
+  short_url: {
+    type: String,
+    required: true,
+  },
+});
+
+const ShortURL = model("ShortURL", shortUrlSchema);
 
 // middlewares
 app.use(cors());
@@ -26,11 +42,18 @@ async function main() {
   console.log("connected to MongoDB...");
 
   // shortner api
-  app.post("/api/shorturl", function (req, res) {
-    res.json({
-      original_url: "https://www.google.com",
-      short_url: 1,
-    });
+  app.post("/api/shorturl", async function (req, res) {
+    const uuid = crypto.randomUUID().slice(0, 2);
+
+    const data = {
+      original_url: req.body.url,
+      short_url: uuid,
+    };
+
+    const result = await ShortURL.create(data);
+    // console.log(result);
+    // const result = ShortURL.create(data);
+    res.json(data);
   });
 
   app.listen(port, function () {
