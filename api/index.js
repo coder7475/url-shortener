@@ -6,10 +6,17 @@ const app = express();
 // Basic Configuration
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+// MongoDB and mongoose connect
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
+// middlewares
+app.use(cors());
 app.use("/public", express.static(`${process.cwd()}/public`));
 
+// routes
 app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/public/index.html");
 });
